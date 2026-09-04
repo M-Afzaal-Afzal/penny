@@ -43,7 +43,7 @@ header {
   display: flex; align-items: center; gap: 20px; padding: 12px 26px;
 }
 .masthead { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink) }
-.masthead img { width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--ink) }
+.masthead img { width: 64px; height: 64px; border-radius: 50%; border: 2px solid var(--ink); object-fit: cover }
 .masthead .t b { font-family: var(--serif); font-weight: 900; font-size: 1.45rem; letter-spacing: .5px; display: block; line-height: 1 }
 .masthead .t small { font-family: var(--mono); font-size: .58rem; letter-spacing: 2.4px; color: #6b655a }
 .gme-pill {
@@ -154,7 +154,7 @@ nav.top a:hover { background: var(--hl) }
 
 /* ---------- sections base ---------- */
 section { padding: 96px 26px }
-section[id], main[id] { scroll-margin-top: 74px } /* clear the sticky masthead on anchor jumps */
+section[id], main[id] { scroll-margin-top: 92px } /* clear the sticky masthead on anchor jumps */
 .wrap { max-width: 1280px; margin: 0 auto }
 .sec-head { display: flex; align-items: baseline; gap: 20px; border-bottom: 3px double var(--ink); padding-bottom: 14px; margin-bottom: 44px; flex-wrap: wrap }
 .sec-head h2 { font-family: var(--serif); font-weight: 900; font-size: clamp(2rem, 4.5vw, 3.2rem); letter-spacing: -.5px }
@@ -313,9 +313,25 @@ footer .legal { max-width: 1280px; margin: 18px auto 0; color: #6f6a5f }
   .memes { grid-template-columns: 1fr 1fr }
 }
 @media(max-width:480px) {
-  header { padding: 12px 16px; gap: 14px }
+  /* masthead: keep the title on one line beside the bigger logo; the text column may shrink */
+  header { padding: 12px 16px; gap: 12px }
+  .masthead { gap: 10px; min-width: 0 }
+  .masthead .t { min-width: 0 }
+  .masthead .t b { white-space: nowrap; font-size: 1.3rem }
+  .masthead .t small { letter-spacing: 1.2px; font-size: .55rem }
+  .masthead img { width: 56px; height: 56px }
+  .buy-btn { padding: 10px 14px; font-size: .78rem }
   .kicker { flex-wrap: wrap }
   /* keep the nowrap "Not financial advice." strike line inside the column */
   .hero h1 { font-size: clamp(2rem, 9vw, 2.7rem) }
   .numgrid { grid-template-columns: 1fr } /* six tiles, some with long live figures */
+}
+/* below 360px there is no room for the tagline beside the logo and the Buy button */
+@media(max-width:360px) { .masthead .t small { display: none } }
+@media(max-width:340px) {
+  header { padding: 12px; gap: 8px }
+  .masthead { gap: 8px }
+  .masthead img { width: 48px; height: 48px }
+  .masthead .t b { font-size: 1.05rem }
+  .buy-btn { padding: 10px }
 }

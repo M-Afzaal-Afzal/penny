@@ -8,8 +8,10 @@
 
 /* ---------- token / socials / links ---------- */
 
-// Placeholder at real EVM length — replace with the live contract address.
+// Placeholder at real EVM length — paste the live contract address here at launch.
+// The Uniswap and Dexscreener links below light up on their own once it is a real address.
 export const CONTRACT_ADDRESS = "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
+export const CONTRACT_ADDRESS_SET = /^0x[0-9a-fA-F]{40}$/.test(CONTRACT_ADDRESS);
 
 /** Tokenized $GME on Robinhood Chain (the other side of the pair). */
 export const GME_TOKEN_ADDRESS = "0x1b0E319c6A659F002271B69dB8A7df2F911c153E";
@@ -18,19 +20,26 @@ export const GME_TOKEN_ADDRESS = "0x1b0E319c6A659F002271B69dB8A7df2F911c153E";
 export const GME_PAIR_ADDRESS = "0xe2b46c905e12ab8e2f864e4821a4325884c1b126";
 export const GME_DEXSCREENER_URL = `https://dexscreener.com/robinhood/${GME_PAIR_ADDRESS}`;
 
-// Replace "#" with the real community links.
-export const SOCIALS = [
-  { label: "𝕏 Follow", href: "#" },
-  { label: "Telegram", href: "#" },
-  { label: "Dexscreener", href: "#" },
-];
-
 export const EXTERNAL_LINKS = {
+  x: "https://x.com/PennyIGWT",
+  fomo: "https://fomo.family/download",
+  // Replace "#" with the real links.
   robinhoodWallet: "#",
   relay: "#",
-  uniswap: "#",
-  fomo: "https://fomo.family/download",
+  /** Uniswap on Robinhood Chain, with $PENNY preselected as the token to receive. */
+  uniswap: CONTRACT_ADDRESS_SET
+    ? `https://app.uniswap.org/swap?chain=robinhood&outputCurrency=${CONTRACT_ADDRESS}`
+    : "https://app.uniswap.org/swap?chain=robinhood",
+  /** $PENNY on Dexscreener (a token address resolves to its top pair). */
+  dexscreener: CONTRACT_ADDRESS_SET
+    ? `https://dexscreener.com/robinhood/${CONTRACT_ADDRESS}`
+    : "#",
 };
+
+export const SOCIALS = [
+  { label: "𝕏 Follow", href: EXTERNAL_LINKS.x },
+  { label: "Dexscreener", href: EXTERNAL_LINKS.dexscreener },
+];
 
 /* ---------- site meta ---------- */
 
@@ -44,7 +53,8 @@ export const SITE = {
 };
 
 export const IMAGES = {
-  logo: "/images/logo.jpg",
+  // The masthead uses the full-bleed penny so the coin fills its ring.
+  logo: "/images/penny-coin.jpg",
   penny: "/images/penny-coin.jpg",
 };
 
@@ -337,7 +347,7 @@ export const FAQ = {
     },
     {
       question: "What's the contract address?",
-      answer: `${CONTRACT_ADDRESS}. Always verify it against our official X and Telegram before swapping.`,
+      answer: `${CONTRACT_ADDRESS}. Always verify it against our official X before swapping.`,
       mono: true,
     },
   ],

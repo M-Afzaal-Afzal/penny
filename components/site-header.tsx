@@ -6,7 +6,7 @@ export function SiteHeader() {
   return (
     <header>
       <a className="masthead" href="#top">
-        <Image src={IMAGES.logo} alt={SITE.ticker} width={44} height={44} />
+        <Image src={IMAGES.logo} alt={SITE.ticker} width={64} height={64} />
         <span className="t">
           <b>{SITE.name}</b>
           <small>{SITE.tagline}</small>
