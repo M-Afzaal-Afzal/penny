@@ -1,5 +1,3 @@
-import { num2, signedPct, usd } from "./format";
-
 /**
  * Single source of truth for every piece of content on the site.
  *
@@ -13,6 +11,13 @@ import { num2, signedPct, usd } from "./format";
 // Placeholder at real EVM length — replace with the live contract address.
 export const CONTRACT_ADDRESS = "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 
+/** Tokenized $GME on Robinhood Chain (the other side of the pair). */
+export const GME_TOKEN_ADDRESS = "0x1b0E319c6A659F002271B69dB8A7df2F911c153E";
+
+/** GME/USDG Uniswap v3 pool on Robinhood Chain — the deepest $GME pool. The live feed reads it. */
+export const GME_PAIR_ADDRESS = "0xe2b46c905e12ab8e2f864e4821a4325884c1b126";
+export const GME_DEXSCREENER_URL = `https://dexscreener.com/robinhood/${GME_PAIR_ADDRESS}`;
+
 // Replace "#" with the real community links.
 export const SOCIALS = [
   { label: "𝕏 Follow", href: "#" },
@@ -23,6 +28,8 @@ export const SOCIALS = [
 export const EXTERNAL_LINKS = {
   robinhoodWallet: "#",
   relay: "#",
+  uniswap: "#",
+  fomo: "https://fomo.family/download",
 };
 
 /* ---------- site meta ---------- */
@@ -33,7 +40,7 @@ export const SITE = {
   tagline: "PAIRED WITH $GME · ROBINHOOD CHAIN",
   title: "$PENNY | Penny stocks are back. This time it's literal.",
   description:
-    "$PENNY is a memecoin paired with tokenized $GME on Robinhood Chain. The most shorted stock in history on one side, one cent of pure conviction on the other. Every trade stacks the Vault.",
+    "$PENNY is a memecoin paired with tokenized $GME on Robinhood Chain. The most shorted stock in history on one side, one cent of pure conviction on the other.",
 };
 
 export const IMAGES = {
@@ -41,19 +48,18 @@ export const IMAGES = {
   penny: "/images/penny-coin.jpg",
 };
 
-/* ---------- market data (demo values — wire to live feeds) ---------- */
+/* ---------- live $GME feed ---------- */
 
-export const MARKET = {
-  gmePrice: 28.42,
-  gmeChangePct: 3.1,
-  vaultGme: 24310.55,
-};
+/**
+ * Which live tokenized-$GME figure a slot shows. Rendered by <GmeStat>,
+ * fed by the Dexscreener poller in lib/gme-feed.ts.
+ */
+export type GmeField = "price" | "change" | "volume" | "liquidity";
 
 /* ---------- navigation ---------- */
 
 export const SECTION_IDS = {
   lore: "lore",
-  index: "index",
   numbers: "numbers",
   how: "how",
   memes: "memes",
@@ -62,7 +68,6 @@ export const SECTION_IDS = {
 
 export const NAV_LINKS = [
   { label: "Lore", href: `#${SECTION_IDS.lore}` },
-  { label: "Index", href: `#${SECTION_IDS.index}` },
   { label: "Numbers", href: `#${SECTION_IDS.numbers}` },
   { label: "How to buy", href: `#${SECTION_IDS.how}` },
   { label: "Memes", href: `#${SECTION_IDS.memes}` },
@@ -73,20 +78,22 @@ export const BUY_BUTTON = { label: "Buy $PENNY", href: `#${SECTION_IDS.how}` };
 
 /* ---------- top ticker ---------- */
 
-export interface TickerItem {
-  text: string;
-  /** CSS class from the ticker styles: up (green), dn (red), cp (copper). */
-  cls?: "up" | "dn" | "cp";
-}
+/** CSS classes from the ticker styles: up (green), dn (red), cp (copper). */
+export type TickerTone = "up" | "dn" | "cp";
+
+export type TickerItem =
+  | { text: string; cls?: TickerTone }
+  /** "$GME $19.26" — label followed by the live price. */
+  | { label: string; live: "price" }
+  /** "▲ 0.18%" — live 24h move, colored up/dn. */
+  | { live: "change" };
 
 export const TICKER: TickerItem[] = [
   { text: SITE.ticker, cls: "cp" },
   { text: "▲ literally one cent", cls: "up" },
   { text: "·" },
-  { text: `$GME **${usd(MARKET.gmePrice)}**` },
-  { text: signedPct(MARKET.gmeChangePct), cls: MARKET.gmeChangePct >= 0 ? "up" : "dn" },
-  { text: "·" },
-  { text: `VAULT **${num2(MARKET.vaultGme)}** GME` },
+  { label: "$GME", live: "price" },
+  { live: "change" },
   { text: "·" },
   { text: "SHORTS ▼ still not covered", cls: "dn" },
   { text: "·" },
@@ -98,7 +105,7 @@ export const HERO = {
   kicker: "FRONT PAGE · **MEME STOCK** MEETS **MEMECOIN**",
   headline:
     "Penny stocks are back.\nThis time it's *literal*.\n~~Not financial advice.~~",
-  dek: "$PENNY is a memecoin paired with **tokenized $GME** on Robinhood Chain. The most shorted stock in history on one side, **one cent of pure conviction** on the other. Every trade stacks the Vault. The papers warned you about penny stocks. So we made one you can actually hold.",
+  dek: "$PENNY is a memecoin paired with **tokenized $GME** on Robinhood Chain. The most shorted stock in history on one side, **one cent of pure conviction** on the other. The papers warned you about penny stocks. So we made one you can actually hold.",
   byline: "By **The Holders** · Robinhood Chain Bureau · Est. one cent",
   ctas: [
     { label: "Buy $PENNY ↗", href: `#${SECTION_IDS.how}`, solid: true },
@@ -124,7 +131,7 @@ export const HERO = {
 export const MARQUEE = [
   "A penny paired with $GME",
   "On the chain that turned the buy button back on",
-  "The index of the meme stocks",
+  "One penny, one stock: $GME",
   "Eat the rich, tip the penny",
 ];
 
@@ -164,9 +171,7 @@ export const LORE = {
   ],
   note: {
     paragraphs: [
-      "They wrote a thousand headlines warning you about penny stocks. They halted the buy button on $GME. So we did the only reasonable thing: **put an actual penny on the chain Robinhood built**, and paired it with **tokenized $GME**.",
-      "But $GME is only the first name on the list. **$PENNY is built to become THE penny stock: one coin indexing the meme stocks.** The low caps. The left-for-dead tickers. The most shorted companies on the tape, squeeze candidates every one. The same stocks the papers called dangerous, pooled behind one cent.",
-      "Every new pool gets added the only way that would be legitimate: **the community votes the next ticker in**. One penny, many battlegrounds. The suits pick their shorts. **We pick our fights.**",
+      "They wrote a thousand headlines warning you about penny stocks. They halted the buy button on $GME. So we did the only reasonable thing: **put an actual penny on the chain Robinhood built**, and paired it with **tokenized $GME**. One coin. One stock. The most shorted name in history on one side, one cent of pure conviction on the other. No index, no roadmap, no pivot. **Just the penny and GME, until the shorts cover.**",
     ],
     signature: "One cent. In holders we trust.",
   },
@@ -196,92 +201,80 @@ export const LORE = {
       },
     ],
     footnote:
-      "Every pool in the Index targets a high-short-interest ticker for exactly this reason. Apes together strong.",
-  },
-};
-
-/* ---------- the index ---------- */
-
-export interface Pool {
-  number: string;
-  title: string;
-  body: string;
-  status: { label: string; tone: "live" | "pending" | "locked" };
-  dark?: boolean;
-}
-
-const POOLS: Pool[] = [
-  {
-    number: "⚔",
-    title: "PENNY / GME",
-    body: "The genesis pool. The king of meme stocks, live on Robinhood Chain. The Vault stacks it on every trade.",
-    status: { label: "● LIVE", tone: "live" },
-    dark: true,
-  },
-  {
-    number: "02",
-    title: "PENNY / ???",
-    body: "The second battleground. Nominations open to any tokenized ticker with short interest worth fighting. The community votes it in.",
-    status: { label: "◌ VOTE PENDING", tone: "pending" },
-  },
-  {
-    number: "03",
-    title: "PENNY / ???",
-    body: "One campaign at a time. Each time a pool succeeds, the next nomination opens. Every heavily shorted meme stock is a candidate. One penny, the whole index, eventually.",
-    status: { label: "◌ UNLOCKS AFTER CAMPAIGN 02", tone: "locked" },
-  },
-];
-
-export const INDEX = {
-  id: SECTION_IDS.index,
-  heading: "The Index",
-  label: "SEC. 02 · ONE PENNY, MANY BATTLEGROUNDS",
-  intro:
-    "$PENNY is the ==index of the meme stocks==: every pool pairs the penny against a tokenized, high-short-interest ticker. $GME opens the index. The community votes each new stock in, pool by pool. High short interest gets you on the ballot, and the cadence is simple: **one campaign at a time. Each successful campaign unlocks the next nomination.** The holders decide who we squeeze next.",
-  pools: POOLS,
-  quote: {
-    text: "\"They built indexes of the S&P 500. We're building an index of everything they bet against. High short interest isn't a warning label anymore. It's **an application form**.\"",
-    who: "The Index thesis, one cent edition",
+      "$GME is the most shorted stock in history for exactly this reason. Apes together strong.",
   },
 };
 
 /* ---------- numbers ---------- */
 
+/** A tile in the Numbers grid: a fixed value, or a live $GME figure. */
+export type Stat = { label: string; href?: string } & (
+  | { value: string }
+  | { live: GmeField }
+);
+
 export const NUMBERS = {
   id: SECTION_IDS.numbers,
   heading: "The Numbers",
-  label: "SEC. 03 · LIVE · AUDITED BY VIBES",
+  label: "SEC. 02 · SIMPLE ON PURPOSE",
   stats: [
     { value: "1B", label: "Total supply" },
     { value: "0/0", label: "Tax" },
     { value: "100%", label: "In pool · LP burned" },
-    { value: usd(MARKET.gmePrice), label: "$GME · tokenized" },
-  ],
+    { live: "price", label: "$GME · tokenized · live", href: GME_DEXSCREENER_URL },
+    { live: "volume", label: "$GME onchain volume · 24h" },
+    { live: "liquidity", label: "GME/USDG pool liquidity" },
+  ] satisfies Stat[],
 };
 
 /* ---------- how to buy ---------- */
 
+export interface BuyPath {
+  title: string;
+  /** The small chip next to the title ("For normies"). */
+  level: string;
+  /** One-line summary of what the path needs. */
+  who: string;
+  steps: string[];
+  cta: { label: string; href: string };
+  /** Inverted (ink) card. */
+  dark?: boolean;
+}
+
+const BUY_PATHS: BuyPath[] = [
+  {
+    title: "The easy way",
+    level: "For normies",
+    who: "FOMO app · Apple Pay · no wallet setup",
+    dark: true,
+    steps: [
+      "Download **FOMO** on iPhone or Android, or open it on web. Sign up with an email in about ten seconds.",
+      "Fund with **Apple Pay** or card. No seed phrase, no gas, no bridge. FOMO is multichain and gasless.",
+      "Search **$PENNY** or paste the contract address, type an amount, tap buy. That's it. You now hold a penny.",
+    ],
+    cta: { label: "Get FOMO ↗", href: EXTERNAL_LINKS.fomo },
+  },
+  {
+    title: "The onchain way",
+    level: "For degens",
+    who: "Your wallet · Robinhood Chain · Uniswap",
+    steps: [
+      `Get a wallet: [Robinhood Wallet](${EXTERNAL_LINKS.robinhoodWallet}) or MetaMask. Add the **Robinhood Chain** network (instructions in the official docs).`,
+      `Bridge some ETH to Robinhood Chain with [Relay](${EXTERNAL_LINKS.relay}). You need a little extra for gas.`,
+      "Open **Uniswap**, select Robinhood Chain, paste the **$PENNY contract address** as the output token. Never trust a search result, only the CA on this site.",
+      "Enter your ETH amount, set slippage to **2 to 5%**, confirm the swap in your wallet. Done. Add $PENNY to your wallet to see it.",
+    ],
+    cta: { label: "Open Uniswap ↗", href: EXTERNAL_LINKS.uniswap },
+  },
+];
+
 export const HOW_TO_BUY = {
   id: SECTION_IDS.how,
   heading: "How to Buy",
-  label: "SEC. 04 · SO EASY A SUIT COULD DO IT",
-  steps: [
-    {
-      number: "01",
-      title: "Get the wallet",
-      body: `Download [Robinhood Wallet](${EXTERNAL_LINKS.robinhoodWallet}), or use any wallet and add the Robinhood Chain network.`,
-    },
-    {
-      number: "02",
-      title: "Bridge funds",
-      body: `Bridge over to Robinhood Chain. We recommend [Relay](${EXTERNAL_LINKS.relay}), but any bridge in the official docs works.`,
-    },
-    {
-      number: "03",
-      title: "Swap for $PENNY",
-      body: "Open the DEX, paste the contract address, swap. Congratulations, you now hold an actual penny.",
-    },
-  ],
+  label: "SEC. 03 · TWO WAYS IN",
+  paths: BUY_PATHS,
+  explainer:
+    "**Uniswap, explained in one breath:** there is no order book and no company on the other side. A pool holds ETH and $PENNY. When you buy, you put ETH in and take $PENNY out, and the price moves with the ratio. Slippage is how much price movement you accept while your trade goes through. Bigger buy, bigger move. The pool is public, the contract is public, nobody can pause it.",
   quote: {
     text: '"The question isn\'t whether you can afford to buy a penny. The question is whether you can afford **not** to own the penny. Pick up the phone."',
     who: "Some guy on the trading floor, probably",
@@ -293,7 +286,7 @@ export const HOW_TO_BUY = {
 export const SLOGAN = {
   kick: "They watched the documentary. We lived the comments section.",
   headline: "EAT THE RICH.\n*TIP THE PENNY.*",
-  body: "The old slogan was a protest against corporate power and rigged markets. Ours comes with a ticker. Every pool in the Index points the penny at the most shorted corporations on the tape and lets the holders do the eating.",
+  body: "The old slogan was a protest against corporate power and rigged markets. Ours comes with a ticker. The penny points at one stock, the most shorted name on the tape, and lets the holders do the eating.",
 };
 
 /* ---------- meme gallery ---------- */
@@ -301,7 +294,7 @@ export const SLOGAN = {
 export const MEMES = {
   id: SECTION_IDS.memes,
   heading: "Meme Gallery",
-  label: "SEC. 05 · SPREAD THE PENNY",
+  label: "SEC. 04 · SPREAD THE PENNY",
   items: [
     { src: "/images/meme-01.jpg", alt: "Penny in the broker's hand" },
     { src: "/images/meme-02.jpg", alt: "The rolling penny, editorial style" },
@@ -319,7 +312,7 @@ export const MEMES = {
 export const FAQ = {
   id: SECTION_IDS.faq,
   heading: "FAQ",
-  label: "SEC. 06 · COMMON CENTS QUESTIONS",
+  label: "SEC. 05 · COMMON CENTS QUESTIONS",
   items: [
     {
       question: "Is this affiliated with GameStop or Robinhood?",
@@ -335,12 +328,7 @@ export const FAQ = {
     {
       question: 'What does "paired with $GME" mean?',
       answer:
-        "$PENNY doesn't trade against USD. It trades directly against ==tokenized $GME==, onchain. When the meme stock moves, the penny feels it. Trading fees stack tokenized $GME in the community Vault.",
-    },
-    {
-      question: "What's the Index?",
-      answer:
-        "$PENNY starts paired with $GME, but the plan is bigger: an ==index of meme stocks==, low caps and high-short-interest names, each added as a new pool. New tickers get in one way only: ==the community votes them in==. One campaign at a time: ==each successful campaign opens the next nomination==. The suits pick their shorts; the holders pick the fights.",
+        "$PENNY doesn't trade against USD. It trades directly against ==tokenized $GME==, onchain. When the meme stock moves, the penny feels it. A community $GME Vault fed by trading fees is next on the list; when it goes live, it shows up right here.",
     },
     {
       question: "Will it go up?",
@@ -370,5 +358,5 @@ export const FOOTER = {
     { label: "Memes", href: `#${SECTION_IDS.memes}` },
   ],
   legal:
-    "$PENNY is a memecoin paired with tokenized $GME. It does not represent GameStop equity, and holders cannot redeem assets from the Vault. It is, famously, worth about one cent of seriousness. Extremely volatile. Not an investment product. Not affiliated with GameStop Corp., Robinhood Markets, Inc., the U.S. Mint, or Abraham Lincoln. Please don't sue the penny.",
+    "$PENNY is a memecoin paired with tokenized $GME. It does not represent GameStop equity. It is, famously, worth about one cent of seriousness. Extremely volatile. Not an investment product. Not affiliated with GameStop Corp., Robinhood Markets, Inc., the U.S. Mint, or Abraham Lincoln. Please don't sue the penny.",
 };

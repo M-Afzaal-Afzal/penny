@@ -2,7 +2,6 @@ import { FaqSection } from "@/components/faq-section";
 import { FinaleSection } from "@/components/finale-section";
 import { Hero } from "@/components/hero";
 import { HowToBuySection } from "@/components/how-to-buy-section";
-import { IndexSection } from "@/components/index-section";
 import { LoreSection } from "@/components/lore-section";
 import { Marquee } from "@/components/marquee";
 import { MemeGallery } from "@/components/meme-gallery";
@@ -21,7 +20,6 @@ export default function Home() {
         <Hero />
         <Marquee />
         <LoreSection />
-        <IndexSection />
         <NumbersSection />
         <HowToBuySection />
         <SloganSection />

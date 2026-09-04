@@ -1,6 +1,6 @@
 import Image from "next/image";
-import { BUY_BUTTON, IMAGES, MARKET, NAV_LINKS, SITE } from "@/lib/constants";
-import { usd } from "@/lib/format";
+import { BUY_BUTTON, IMAGES, NAV_LINKS, SITE } from "@/lib/constants";
+import { GmeStat } from "./gme-stat";
 
 export function SiteHeader() {
   return (
@@ -14,7 +14,10 @@ export function SiteHeader() {
       </a>
       <div className="gme-pill">
         <span className="dot" />
-        $GME <b>{usd(MARKET.gmePrice)}</b>
+        $GME{" "}
+        <b>
+          <GmeStat field="price" />
+        </b>
       </div>
       <nav className="top">
         {NAV_LINKS.map((link) => (

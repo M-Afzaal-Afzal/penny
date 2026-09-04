@@ -194,38 +194,44 @@ section[id], main[id] { scroll-margin-top: 74px } /* clear the sticky masthead o
 .lore-note b { background: var(--hl); padding: 0 3px }
 .lore-note .sig { font-family: var(--mono); font-size: .74rem; letter-spacing: 2px; margin-top: 16px; display: block; color: #6b655a; text-transform: uppercase }
 
-/* ---------- the index ---------- */
-#index { background: var(--paper2); border-top: 2px solid var(--ink) }
-.index-intro { max-width: 760px; font-size: 1.05rem; line-height: 1.8; color: #3d382f; margin-bottom: 44px }
-.index-intro mark { background: var(--hl); padding: 0 3px; font-weight: 700; color: inherit }
-
 /* ---------- numbers ---------- */
 .dark { background: var(--ink); color: var(--paper) }
 .dark .sec-head { border-color: var(--paper) }
 .dark .sec-head .idx { color: #8f897d }
-.numgrid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2px; background: #2c2823; border: 2px solid #2c2823 }
-.num { background: var(--ink); padding: 30px 26px }
-.num .v { font-family: var(--sans); font-weight: 900; font-size: clamp(1.7rem, 3.4vw, 2.6rem); color: var(--copper-hi); letter-spacing: -.5px }
+.numgrid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; background: #2c2823; border: 2px solid #2c2823 }
+.num { background: var(--ink); padding: 30px 26px; min-width: 0 }
+a.num { display: block; color: inherit; text-decoration: none } /* the live $GME tile links to Dexscreener */
+a.num:hover .v { color: var(--hl) }
+/* live figures ("$38,408,541") may wrap rather than prop the grid open on narrow screens */
+.num .v { font-family: var(--sans); font-weight: 900; font-size: clamp(1.7rem, 3.4vw, 2.6rem); color: var(--copper-hi); letter-spacing: -.5px; overflow-wrap: anywhere }
 .num .l { font-family: var(--mono); font-size: .7rem; letter-spacing: 2px; color: #8f897d; margin-top: 10px; text-transform: uppercase }
 
-/* ---------- how to (boiler room) ---------- */
-.steps { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 26px }
-.stepc { border: 2px solid var(--ink); background: var(--paper); padding: 26px; box-shadow: 6px 6px 0 var(--ink) }
-.stepc .n {
-  font-family: var(--serif); font-weight: 900; font-size: 2.4rem; color: var(--copper);
-  border-bottom: 2px solid var(--ink); display: inline-block; line-height: 1; padding-bottom: 6px; margin-bottom: 16px;
+/* ---------- how to buy (two ways in) ---------- */
+.paths { display: grid; grid-template-columns: 1fr 1fr; gap: 26px }
+.path { border: 2px solid var(--ink); background: var(--paper); padding: 26px; box-shadow: 6px 6px 0 var(--ink) }
+.path-dark { background: var(--ink); color: var(--paper) }
+.path .ph { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 6px }
+.path .ph h3 { font-family: var(--sans); font-weight: 900; text-transform: uppercase; font-size: 1.15rem; letter-spacing: .5px }
+.path .ph .lvl { font-family: var(--mono); font-size: .66rem; letter-spacing: 2px; text-transform: uppercase; border: 1.5px solid currentColor; padding: 4px 8px; white-space: nowrap }
+.path .who { font-family: var(--mono); font-size: .74rem; letter-spacing: 1px; color: #6b655a; margin-bottom: 18px; text-transform: uppercase }
+.path-dark .who { color: #8f897d }
+.path ol { list-style: none; display: flex; flex-direction: column; gap: 14px }
+.path li { display: flex; gap: 12px; font-size: .95rem; line-height: 1.6; color: #3d382f }
+.path-dark li { color: #d5d0c5 }
+.path li .n {
+  flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--copper); color: #fff;
+  font-family: var(--serif); font-weight: 900; font-size: .9rem; display: flex; align-items: center; justify-content: center;
 }
-.stepc h3 { font-family: var(--sans); font-weight: 900; text-transform: uppercase; font-size: 1.05rem; letter-spacing: .5px; margin-bottom: 10px }
-.stepc p { font-size: .95rem; line-height: 1.65; color: #3d382f }
-.stepc p a { color: var(--copper); font-weight: 700 }
-.stepc-dark { background: var(--ink); color: var(--paper) }
-.stepc-dark .n { color: var(--copper-hi); border-color: var(--paper) }
-.stepc-dark h3 { color: var(--copper-hi) }
-.stepc-dark p { color: #b9b3a6 }
-.stepc .pool-status { font-family: var(--mono); font-size: .68rem; letter-spacing: 2px; margin-top: 14px }
-.stepc .pool-status-live { color: #8fd87b }
-.stepc .pool-status-pending { color: var(--copper) }
-.stepc .pool-status-locked { color: #8a8374 }
+.path li a { color: var(--copper); font-weight: 700 }
+.path li b { color: inherit }
+.path .cta {
+  margin-top: 20px; display: inline-block; font-family: var(--sans); font-weight: 900; text-transform: uppercase; font-size: .85rem;
+  padding: 12px 20px; border: 2px solid var(--ink); background: var(--copper); color: #fff; text-decoration: none; box-shadow: 4px 4px 0 var(--ink);
+}
+.path-dark .cta { border-color: var(--paper); box-shadow: 4px 4px 0 rgba(255, 255, 255, .35) }
+@media(max-width:900px) { .paths { grid-template-columns: 1fr } }
+.explain { margin-top: 26px; border: 1.5px dashed var(--ink); padding: 16px 18px; font-size: .92rem; line-height: 1.7; color: #3d382f; background: var(--paper2) }
+.explain b { background: var(--hl); padding: 0 3px }
 .sell-quote {
   margin-top: 46px; border: 2px solid var(--ink); background: var(--paper2); padding: 26px 30px;
   font-family: var(--serif); font-style: italic; font-size: 1.25rem; line-height: 1.5; max-width: 820px;
@@ -302,7 +308,6 @@ footer .legal { max-width: 1280px; margin: 18px auto 0; color: #6f6a5f }
   .clip { width: 150px; font-size: .72rem; padding: 10px 12px }
   .clip.c1 { top: -18px; right: -4px }
   .clip.c2 { bottom: -20px; left: -6px }
-  .steps { grid-template-columns: 1fr }
   .receipts { grid-template-columns: 1fr }
   .numgrid { grid-template-columns: 1fr 1fr }
   .memes { grid-template-columns: 1fr 1fr }
@@ -312,4 +317,5 @@ footer .legal { max-width: 1280px; margin: 18px auto 0; color: #6f6a5f }
   .kicker { flex-wrap: wrap }
   /* keep the nowrap "Not financial advice." strike line inside the column */
   .hero h1 { font-size: clamp(2rem, 9vw, 2.7rem) }
+  .numgrid { grid-template-columns: 1fr } /* six tiles, some with long live figures */
 }
