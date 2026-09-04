@@ -47,11 +47,7 @@ export const MARKET = {
   gmePrice: 28.42,
   gmeChangePct: 3.1,
   vaultGme: 24310.55,
-  lpGme: 118204.87,
 };
-
-export const VAULT_SHARES = MARKET.vaultGme + MARKET.lpGme;
-export const VAULT_USD = VAULT_SHARES * MARKET.gmePrice;
 
 /* ---------- navigation ---------- */
 
@@ -255,8 +251,6 @@ export const NUMBERS = {
   id: SECTION_IDS.numbers,
   heading: "The Numbers",
   label: "SEC. 03 · LIVE · AUDITED BY VIBES",
-  vaultLabel: "LIVE · $GME IN THE VAULT",
-  vaultSharesLabel: "TOKENIZED $GME SHARES",
   stats: [
     { value: "1B", label: "Total supply" },
     { value: "0/0", label: "Tax" },
