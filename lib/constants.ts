@@ -8,9 +8,9 @@
 
 /* ---------- token / socials / links ---------- */
 
-// Live $PENNY contract on Robinhood Chain.
+// Placeholder at real EVM length — paste the live contract address here at launch.
 // The Uniswap and Dexscreener links below light up on their own once it is a real address.
-export const CONTRACT_ADDRESS = "0x33B228dce79325E284D138594684612945835189";
+export const CONTRACT_ADDRESS = "0xXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX";
 export const CONTRACT_ADDRESS_SET = /^0x[0-9a-fA-F]{40}$/.test(CONTRACT_ADDRESS);
 
 /** Tokenized $GME on Robinhood Chain (the other side of the pair). */
